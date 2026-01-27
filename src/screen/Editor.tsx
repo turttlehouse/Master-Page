@@ -79,7 +79,7 @@ export default function Editor() {
         <StudioEditor
           options={{
             gjsOptions: { storageManager: false },
-            licenseKey: "YOUR_LICENSE_KEY",
+            licenseKey: "9a090a8a3ca142e3b8937425024fb2970f9857838eaf4820ae6f91740c48ac88",
             // @ts-ignore
             onReady: (editor) => setProjectData(editor.getProjectData()),
             project: { type: "react" },
