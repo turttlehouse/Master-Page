@@ -13,6 +13,7 @@
     "@grapesjs/studio-sdk": "^1.0.57",
     "@grapesjs/studio-sdk-plugins": "^1.0.32",
     "@tailwindcss/vite": "^4.1.18",
+    "lucide-react": "^0.563.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.0",
