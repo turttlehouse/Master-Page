@@ -18,12 +18,15 @@ import Section from "../components/Section";
 import Button from "../components/Button";
 import AppBadge from "../components/AppBadge";
 import { createRoot } from "react-dom/client";
+import { registerCustomBlocks } from "../blocks/customBlocks";
+import ServiceProviderSlider from "../components/ServiceProvider";
 
 export default function Editor() {
   const iframeRef = useRef(null);
   const [root, setRoot] = useState();
   const [pageId, setPageId] = useState("");
   const [projectData, setProjectData] = useState();
+  // console.log(projectData);
 
   // For the demo purpose
   useEffect(() => {
@@ -72,6 +75,31 @@ export default function Editor() {
       />,
     );
   }, [projectData, root, pageId]);
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    // @ts-ignore
+    const doc = iframe.contentDocument;
+    if (!doc) return;
+
+    // Copy all stylesheets from parent to iframe
+    const styles = Array.from(document.styleSheets);
+
+    styles.forEach((styleSheet) => {
+      try {
+        const css = Array.from(styleSheet.cssRules)
+          .map((rule) => rule.cssText)
+          .join("");
+
+        const styleEl = doc.createElement("style");
+        styleEl.innerHTML = css;
+        doc.head.appendChild(styleEl);
+      } catch {
+        // ignore CORS stylesheets
+      }
+    });
+  }, []);
 
   return (
     <div>
@@ -79,7 +107,8 @@ export default function Editor() {
         <StudioEditor
           options={{
             gjsOptions: { storageManager: false },
-            licenseKey: "9a090a8a3ca142e3b8937425024fb2970f9857838eaf4820ae6f91740c48ac88",
+            licenseKey:
+              "9a090a8a3ca142e3b8937425024fb2970f9857838eaf4820ae6f91740c48ac88",
             // @ts-ignore
             onReady: (editor) => setProjectData(editor.getProjectData()),
             project: { type: "react" },
@@ -98,6 +127,7 @@ export default function Editor() {
                 editor.on(editor.Pages.events.select, (page) =>
                   setPageId(page.id),
                 );
+                registerCustomBlocks(editor);
 
                 // Add a custom block with a React component
                 editor.Blocks.add(
@@ -111,6 +141,38 @@ export default function Editor() {
                       <Feature
                         title="Feature title"
                         description="Feature description"
+                      />
+                    ),
+                  },
+                  { at: 0 },
+                );
+                editor.Blocks.add(
+                  "Card",
+                  {
+                    label: "Card component",
+                    category: "React",
+                    // @ts-ignore
+                    full: true,
+                    content: (
+                      <Button
+                      // title="Feature title"
+                      // description="Feature description"
+                      />
+                    ),
+                  },
+                  { at: 0 },
+                );
+                editor.Blocks.add(
+                  "Service Provider",
+                  {
+                    label: "Service Provider Component",
+                    category: "React",
+                    // @ts-ignore
+                    full: true,
+                    content: (
+                      <ServiceProviderSlider
+                      // title="Feature title"
+                      // description="Feature description"
                       />
                     ),
                   },
@@ -154,20 +216,6 @@ export default function Editor() {
                           </Section>
                         </>
                       ),
-                    },
-                    {
-                      name: "Page from HTML",
-                      component: `
-                    <h1>React Component from HTML</h1>
-                    <div data-gjs-type="Hero" title="React from HTML"></div>
-                    <style>
-                      body {
-                        font-family: system-ui;
-                        background: white;
-                        margin: 0;
-                      }
-                    </style>
-                    `,
                     },
                   ],
                 },
@@ -297,6 +345,14 @@ export const reactRendererConfig = {
         { name: "href", type: "href" },
       ],
       component: Button,
+    },
+    ServiceProviderSlider: {
+      wrapperStyle: { display: "inline-block" },
+      props: () => [
+        { name: "label", type: "text", value: "Button" },
+        { name: "href", type: "href" },
+      ],
+      component: ServiceProviderSlider,
     },
   },
   bodyAfter: () => <AppBadge />,

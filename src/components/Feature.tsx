@@ -1,3 +1,4 @@
+import "./Feature.css";
 // @ts-ignore
 export default function Feature({ title, description }) {
   return (
@@ -5,10 +6,10 @@ export default function Feature({ title, description }) {
       style={{
         padding: "1.5rem",
         borderRadius: "0.75rem",
-        background: "#fff",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
         marginBottom: "1.5rem",
       }}
+      className="featureBackground"
     >
       <h3 style={{ margin: 0, fontSize: "1.25rem", color: "#111827" }}>
         {title}
